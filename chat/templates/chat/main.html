@@ -1,49 +1,97 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Chats</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            font-size: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            width: 200px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .room-link {
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .room-link:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
 <body>
-	<center><h1>Hello , Welcome to my chat site ! {{request.user}}</h1></center>
-	<br>
-	{% if request.user.is_authenticated %}
-	<center> Logout the chat Page <a href = "{% url 'logout-user' %}">Logout</a></center>
-	{% endif %}
-	<div
-	class="chat__item__container"
-	id="id_chat_item_container"
-	style="font-size: 20px"
-	>
-	<br />
-	<input type="text" id="id_message_send_input" />
-	<button type="submit" id="id_message_send_button">Send Message</button>
-	<br />
-	<br />
-	</div>
-	<script>
-	const chatSocket = new WebSocket("ws://" + window.location.host + "/");
-	chatSocket.onopen = function (e) {
-		console.log("The connection was setup successfully !");
-	};
-	chatSocket.onclose = function (e) {
-		console.log("Something unexpected happened !");
-	};
-	document.querySelector("#id_message_send_input").focus();
-	document.querySelector("#id_message_send_input").onkeyup = function (e) {
-		if (e.keyCode == 13) {
-		document.querySelector("#id_message_send_button").click();
-		}
-	};
-	document.querySelector("#id_message_send_button").onclick = function (e) {
-		var messageInput = document.querySelector(
-		"#id_message_send_input"
-		).value;
-		chatSocket.send(JSON.stringify({ message: messageInput, username : "{{request.user.username}}"}));
-	};
-	chatSocket.onmessage = function (e) {
-		const data = JSON.parse(e.data);
-		var div = document.createElement("div");
-		div.innerHTML = data.username + " : " + data.message;
-		document.querySelector("#id_message_send_input").value = "";
-		document.querySelector("#id_chat_item_container").appendChild(div);
-	};
-	</script>
+    <h1>Chats</h1>
+    <form id="post-form">
+        {% csrf_token %}
+        <input type="text" name="room_name" id="room_name" placeholder="Enter Room Name" />
+        <input type="submit" value="Create Room">
+    </form>
+    {% for room in rooms %}
+        <div>
+            <a class="room-link" href="{% url 'room_view' room %}">{{ room }}</a>
+        </div>
+    {% endfor %}
+
+    <script type="text/javascript">
+        $(document).on('submit','#post-form',function(e){
+            e.preventDefault();
+        
+            $.ajax({
+                type:'POST',
+                url:'/create_room',
+                data:{
+                    room_name:$('#room_name').val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function(data){
+                    // alert(data)
+                }
+            });
+            document.getElementById('room_name').value = '';
+        });
+    </script>
 </body>
 </html>

@@ -5,8 +5,9 @@ from chat import views
 
 
 urlpatterns = [
-    path("", views.chatPage, name="chat-page"),
+    path("", views.home, name="home"),
     path('room/<str:room_name>/', views.room_view, name='room_view'),
+    path('create_room', views.create_room, name='create_room'),
     path('send', views.send, name='send'),
     path('getMessages/<str:room_name>/', views.getMessages, name='getMessages'),
     #login
