@@ -3,16 +3,12 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from .models import Room,Message
 
-def chatPage(request, *args, **kwargs):
+def home(request):
     if not request.user.is_authenticated:
         return redirect("login-user")
-    context = {}
-    return render(request, "chat/main.html", context) 
-
-# chat/views.py
-
-from django.shortcuts import render
-from .models import Room, Message
+    rooms = Room.objects.all()
+    context = {'rooms':rooms}
+    return render(request,'chat/main.html',context=context)
 
 def room_view(request, room_name):
     username = request.GET.get('username')
@@ -20,18 +16,24 @@ def room_view(request, room_name):
     return render(request, 'chat/room.html', {
         'username': username,
         'room': room_name,
-        'room': room_details
+        'room_details': room_details
     })
 
 def send(request):
     message = request.POST['message']
     username = request.POST['username']
     room_id = request.POST['room_id']
-
-    new_message = Message.objects.create(content=message, user=request.user, room=room_id)
+    new_message = Message.objects.create(content=message, user=username, room=room_id)
     new_message.save()
     return HttpResponse('Message sent successfully')
 
 def getMessages(request,room_name):
-    messages = Message.objects.all()
+    room = Room.objects.get(name=room_name)
+    messages = Message.objects.filter(room=room.id)
     return JsonResponse({"messages":list(messages.values())})
+
+def create_room(request):
+    room_name = request.POST['room_name']
+    new_room = Room.objects.create(name=room_name)
+    new_room.save()
+    return HttpResponse()
