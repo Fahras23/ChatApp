@@ -3,14 +3,18 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from .models import Room,Message
 
-def home(request):
+def login(request):
     if not request.user.is_authenticated:
         return redirect("login-user")
+
+def home(request):
+    login(request)
     rooms = Room.objects.all()
     context = {'rooms':rooms}
     return render(request,'chat/main.html',context=context)
 
 def room_view(request, room_name):
+    login(request)
     username = request.GET.get('username')
     room_details = Room.objects.get(name=room_name)
     return render(request, 'chat/room.html', {
@@ -37,3 +41,6 @@ def create_room(request):
     new_room = Room.objects.create(name=room_name)
     new_room.save()
     return HttpResponse()
+
+def logout(request)
+    return render(request,'logout')

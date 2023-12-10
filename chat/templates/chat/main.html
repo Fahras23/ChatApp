@@ -64,6 +64,11 @@
 </head>
 <body>
     <h1>Chats</h1>
+    <div class="menu-bar">
+        <form>
+            <input type="button" value="logout" id="logout">
+        </form>
+    </div>
     <form id="post-form">
         {% csrf_token %}
         <input type="text" name="room_name" id="room_name" placeholder="Enter Room Name" />
@@ -91,7 +96,11 @@
                 }
             });
             document.getElementById('room_name').value = '';
-        });
+            //reload
+            $(document).ajaxStop(function(){
+            window.location.reload();
+});
+        });       
     </script>
 </body>
 </html>
