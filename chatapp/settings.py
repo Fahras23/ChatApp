@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'channels',
 ]
 
-LOGIN_REDIRECT_URL = "chat-page"
+LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login-user"
 
 ASGI_APPLICATION = 'chatapp.asgi.application'
