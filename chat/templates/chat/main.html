@@ -67,13 +67,15 @@
     <form id="post-form">
         {% csrf_token %}
         <input type="text" name="room_name" id="room_name" placeholder="Enter Room Name" />
+        <input type="text" name="username" id="username" placeholder="Enter Username" />
         <input type="submit" value="Create Room">
     </form>
     {% for room in rooms %}
         <div>
-            <a class="room-link" href="{% url 'room_view' room %}">{{ room }}</a>
+            <a class="room-link" href="{% url 'room_view' room %}">{{ room }}{{room.username}}</a>
         </div>
     {% endfor %}
+
 
     <script type="text/javascript">
         $(document).on('submit','#post-form',function(e){
@@ -91,6 +93,7 @@
                 }
             });
             document.getElementById('room_name').value = '';
+            location.reload();
         });
     </script>
 </body>
