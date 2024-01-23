@@ -72,7 +72,8 @@
     </form>
     {% for room in rooms %}
         <div>
-            <a class="room-link" href="{% url 'room_view' room %}">{{ room }}{{room.username}}</a>
+            <a class="room-link" href="{% url 'room_view' room %}">{{ room }}</a>
+            <a class="" href="{% url 'remove_room' room.id %}">remove room</a>
         </div>
     {% endfor %}
 
@@ -86,6 +87,7 @@
                 url:'/create_room',
                 data:{
                     room_name:$('#room_name').val(),
+                    username:$('#username').val(),
                     csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 },
                 success: function(data){
