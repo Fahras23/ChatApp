@@ -64,6 +64,7 @@
 </head>
 <body>
     <h1>Chats</h1>
+    <a class="" href="{% url 'logout-user' %}">logout</a>
     <form id="post-form">
         {% csrf_token %}
         <input type="text" name="room_name" id="room_name" placeholder="Enter Room Name" />
@@ -72,11 +73,11 @@
     </form>
     {% for room in rooms %}
         <div>
-            <a class="room-link" href="{% url 'room_view' room %}">{{ room }}</a>
+            <a class="room-link" href="{% url 'room_view' room.id %}">{{ room }}</a>
             <a class="" href="{% url 'remove_room' room.id %}">remove room</a>
         </div>
     {% endfor %}
-
+    
 
     <script type="text/javascript">
         $(document).on('submit','#post-form',function(e){

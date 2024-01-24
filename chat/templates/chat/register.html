@@ -3,9 +3,11 @@
 <body>
     <form method ="post">
         {% csrf_token %}
-        {{form.as_p}}
+        {{ user_form.as_p }}
         <br>
         <button type = "submit">Register</button>
     </form>
+    {% load static %}
+    <img src="{% static 'qr.png' %}" alt="My image">
 </body>
 </html>
