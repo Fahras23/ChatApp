@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login-user"
 
+
 ASGI_APPLICATION = 'chatapp.asgi.application'
 
 

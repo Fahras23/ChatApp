@@ -14,3 +14,6 @@ class LoginForm(AuthenticationForm):
     username = forms.CharField(label="Username", max_length=63)
     password = forms.CharField(label="Password", widget=forms.PasswordInput)
     code = forms.CharField(label='Code',max_length=100)
+
+class OTPForm(forms.Form):
+    otp_code = forms.CharField(label='OTP Code', max_length=6)

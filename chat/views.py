@@ -3,11 +3,20 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login
 from .models import Room,Message,Profile
-from .forms import UserForm,LoginForm
+from .forms import UserForm,LoginForm,OTPForm
 import pyotp
 import qrcode
 from django.contrib.auth.decorators import login_required
 import base64
+from django.core.mail import send_mail
+
+def send_email(recipient_list,code):
+    subject = 'Hello from Django'
+    message = f'This is a test email sent from a Django application. code {code}'
+    my_email = 'ptomonogle@gmail.com'  # Use the same email as EMAIL_HOST_USER
+    
+    send_mail(subject, message, my_email, recipient_list)
+    
 
 #pages
 @login_required
@@ -41,30 +50,6 @@ def room_view(request, id):
     else:
         print("user not authenticated")
         return redirect(request.META['HTTP_REFERER'])
-
-def register_user(request):
-    key = pyotp.random_base32()
-    uri = pyotp.totp.TOTP(key).provisioning_uri(
-            name='chatapp', 
-            issuer_name="key") 
-    qrcode.make(uri).save("static/qr.png")
-    if request.method == 'POST':
-        user_form = UserForm(data=request.POST)
-        if user_form.is_valid():
-            user = user_form.save()
-            user.set_password(user.password)  # Hash password
-            user.save()
-
-            profile = Profile()
-            profile.user = user
-            profile.code = key
-            profile.save()
-            return redirect('login-user')
-    else:
-        user_form = UserForm()
-
-    return render(request,'chat/register.html',{'user_form': user_form})
-
 
 #functionality
 def send(request):
@@ -116,24 +101,54 @@ def remove_room(request,id):
     else:
         return redirect(request.META['HTTP_REFERER'])
 
+def register_user(request):
+
+    if request.method == 'POST':
+        user_form = UserForm(data=request.POST)
+        if user_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password)  # Hash password
+            user.save()
+
+            profile = Profile(user=user)
+            profile.generate_otp_secret()
+            profile.save()
+
+            authenticate(username=user.username,password=user.password)
+            login(request,user)
+            return redirect('auth')
+    else:
+        user_form = UserForm()
+
+    return render(request,'chat/register.html',{'user_form': user_form})
+
 def login_user(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            code = form.cleaned_data.get('code')
-            print(code)
-            user_hash = User.objects.filter(username=username).first().profile.code
-            user_hash = user_hash.encode('utf-8')
-            user_hash = base64.b32encode(user_hash)
-            totp = pyotp.TOTP(user_hash)
-            verify = totp.verify(code)
-            print(verify)
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')
+            
+            if username is not None and form.is_valid():
+                # User is authenticated with username and password
+                otp_form = OTPForm(request.POST)
+                if otp_form:
+                    user_profile = User.objects.get(username=username)
+                    code = form.cleaned_data.get('code')
+                    if pyotp.TOTP(user_profile.profile.code).verify(code):
+                        login(request, user_profile)
+                        return redirect('home')  # Redirect to a home page or dashboard
+                    else:
+                        # OTP verification failed
+                        pass
     else:
         form = LoginForm()
     return render(request, 'chat/login.html', {'form': form})
+
+@login_required
+def qr_code(request):
+    user_profile = request.user.profile
+    otp_url = pyotp.totp.TOTP(user_profile.code).provisioning_uri(request.user.email, issuer_name=request.user.username)
+    qrcode.make(otp_url).save("static/qr.png") 
+    
+    return render(request,'chat/auth.html')

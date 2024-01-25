@@ -15,4 +15,5 @@ urlpatterns = [
     #login
     path("login/", views.login_user, name="login-user"),
     path("logout/", LogoutView.as_view(), name="logout-user"),
+    path("auth/", views.qr_code, name="auth"),
 ]
