@@ -77,8 +77,18 @@
     </style>
 </head>
 <body>
-    <h1>{{ room.name }}</h1>
-    <h1>{{author}},{{username}}</h1>
+    <a class="" href="{% url 'home' %}">back to rooms</a>
+    <title>users:</title>
+    <h1>{{ room }}</h1>
+    {% for user in usernames %}
+    <span>{{user}}</span>
+    {% endfor %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="username">Add user:</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" required>
+        <button type="submit">Submit</button>
+    </form>
     <div id="display"></div>
     <form id="post-form">
         {% csrf_token %}
