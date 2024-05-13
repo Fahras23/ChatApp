@@ -5,7 +5,7 @@ from chat import views
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path('room/<str:room_name>/', views.room_view, name='room_view'),
+    path('room/<int:id>/', views.room_view, name='room_view'),
     path('remove_room/<int:id>/', views.remove_room, name='remove_room'),
     path('create_room', views.create_room, name='create_room'),
     path('send', views.send, name='send'),
@@ -13,7 +13,7 @@ urlpatterns = [
     #register
     path("register/", views.register_user, name="register-user"),
     #login
-    path("login/", LoginView.as_view
-         (template_name="chat/login.html"), name="login-user"),
+    path("login/", views.login_user, name="login-user"),
     path("logout/", LogoutView.as_view(), name="logout-user"),
+    path("auth/", views.qr_code, name="auth"),
 ]
