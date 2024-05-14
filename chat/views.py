@@ -8,19 +8,10 @@ import pyotp
 import qrcode
 from django.contrib.auth.decorators import login_required
 import base64
-from django.core.mail import send_mail
 
-def send_email(recipient_list,code):
-    subject = 'Hello from Django'
-    message = f'This is a test email sent from a Django application. code {code}'
-    my_email = 'ptomonogle@gmail.com'  # Use the same email as EMAIL_HOST_USER
-    
-    send_mail(subject, message, my_email, recipient_list)
-    
-
-#pages
-@login_required
 def home(request):
+    if request.user.is_authenticated is False:
+        return redirect('login-user')
     if request.method == "POST":
         remove_room = request.POST["room"]
         print(rooms,remove_room)
@@ -56,13 +47,16 @@ def send(request):
     message = request.POST['message']
     room_id = request.POST['room_id']
     username = request.user
-    new_message = Message.objects.create(content=message, user=username, room=room_id)
-    new_message.save()
-    return HttpResponse('Message sent successfully')
-
+    if message:
+        new_message = Message.objects.create(content=message, user=username, room_id=room_id)
+        new_message.save()
+        return HttpResponse('Message sent successfully')
+    else:
+        return HttpResponse('Message inncorrect')
+    
 def getMessages(request,room_name):
     room = Room.objects.get(name=room_name)
-    messages = Message.objects.filter(room=room.id)
+    messages = Message.objects.filter(room=room)
     return JsonResponse({"messages":list(messages.values())})
 
 def create_room(request):
@@ -71,6 +65,7 @@ def create_room(request):
     username = request.POST['username']
     usernames = list(username.split(","))
     author = str(request.user)
+    print(author)
     usernames.append(author)
     print(usernames)
     users = list(User.objects.values_list('username', flat = True))
@@ -107,7 +102,7 @@ def register_user(request):
         user_form = UserForm(data=request.POST)
         if user_form.is_valid():
             user = user_form.save()
-            user.set_password(user.password)  # Hash password
+            user.set_password(user.password)
             user.save()
 
             profile = Profile(user=user)
@@ -137,7 +132,7 @@ def login_user(request):
                     code = form.cleaned_data.get('code')
                     if pyotp.TOTP(user_profile.profile.code).verify(code):
                         login(request, user_profile)
-                        return redirect('home')  # Redirect to a home page or dashboard
+                        return redirect('home')
                     else:
                         # OTP verification failed
                         pass
