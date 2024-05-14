@@ -1,9 +1,23 @@
 <!DOCTYPE html>
 <html>
-<body>
+<head>
+    <title>QR Code Display</title>
     {% load static %}
-    <img src="{% static 'qr.png' %}" alt="My image">
-    <a class="" href="{% url 'home' %}">home</a>
-    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+    </div>
+
+    <div class="content">
+        <div class="image-container">
+            <img src="{% static 'qr.png' %}" alt="My image" class="qr-image">
+        </div>
+        <div class="home-link">
+            <a href="{% url 'home' %}">Home</a>
+        </div>
+    </div>
+
 </body>
 </html>
