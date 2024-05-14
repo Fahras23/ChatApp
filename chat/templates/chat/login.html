@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
 <body>
-    <form method ="post">
-        {% csrf_token %}
-        {{form.as_p}}
-        <br>
-        <button type = "submit">Login</button>
-        <span>New user register 
-            <a class="" href="{% url 'register-user' %}">here</a>
-        </span>
-    </form>
+
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+    </div>
+
+    <div class="content">
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="form-button">Login</button>
+            <div class="register-link">
+                New user? Register <a href="{% url 'register-user' %}">here</a>.
+            </div>
+        </form>
+    </div>
+
 </body>
 </html>

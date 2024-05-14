@@ -2,102 +2,51 @@
 <html>
 <head>
     <title>Chats</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-
-        h1 {
-            font-size: 40px;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        form {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-right: 10px;
-            width: 200px;
-        }
-
-        input[type="submit"] {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        .room-link {
-            display: block;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #fff;
-            margin-bottom: 10px;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .room-link:hover {
-            background-color: #f0f0f0;
-        }
-    </style>
 </head>
 <body>
-    <h1>Chats</h1>
-    <a class="" href="{% url 'logout-user' %}">logout</a>
-    <form id="post-form">
-        {% csrf_token %}
-        <input type="text" name="room_name" id="room_name" placeholder="Enter Room Name" />
-        <input type="text" name="username" id="username" placeholder="Enter Username" />
-        <input type="submit" value="Create Room">
-    </form>
-    {% for room in rooms %}
-        <div>
-            <a class="room-link" href="{% url 'room_view' room.id %}">{{ room }}</a>
-            <a class="" href="{% url 'remove_room' room.id %}">remove room</a>
-        </div>
-    {% endfor %}
-    
+
+    <div class="navbar">
+        <a href="{% url 'logout-user' %}">Logout</a>
+    </div>
+
+    <div class="content">
+        <h1 class="centered-title">Chats</h1>
+        <form id="post-form" class="chat-form">
+            {% csrf_token %}
+            <input type="text" name="room_name" id="room_name" class="form-input" placeholder="Enter Room Name">
+            <input type="text" name="username" id="username" class="form-input" placeholder="Enter Username">
+            <button type="submit" class="form-button">Create Room</button>
+        </form>
+
+        {% for room in rooms %}
+            <div class="room-container">
+                <a class="room-link" href="{% url 'room_view' room.id %}">{{ room }}</a>
+                <a class="remove-link" href="{% url 'remove_room' room.id %}">Remove Room</a>
+            </div>
+        {% endfor %}
+    </div>
 
     <script type="text/javascript">
-        $(document).on('submit','#post-form',function(e){
+        $(document).on('submit', '#post-form', function(e) {
             e.preventDefault();
-        
             $.ajax({
-                type:'POST',
-                url:'/create_room',
-                data:{
-                    room_name:$('#room_name').val(),
-                    username:$('#username').val(),
-                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                type: 'POST',
+                url: '/create_room',
+                data: {
+                    room_name: $('#room_name').val(),
+                    username: $('#username').val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                 },
-                success: function(data){
-                    // alert(data)
+                success: function(data) {
                 }
             });
-            document.getElementById('room_name').value = '';
+            $('#room_name').val('');
             location.reload();
         });
     </script>
+
 </body>
 </html>
