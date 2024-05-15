@@ -3,19 +3,20 @@
 <head>
     <title>QR Code Display</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="navbar">
-        <a href="{% url 'home' %}">Home</a>
+<body class="bg-gray-100">
+
+    <div class="navbar bg-gray-800 text-white p-6">
+        <a href="{% url 'home' %}" class="text-lg font-bold">Home</a>
     </div>
 
-    <div class="content">
-        <div class="image-container">
+    <div class="content max-w-lg mx-auto p-8">
+        <div class="image-container mb-8">
             <img src="{% static 'qr.png' %}" alt="My image" class="qr-image">
         </div>
-        <div class="home-link">
-            <a href="{% url 'home' %}">Home</a>
+        <div class="home-link text-center">
+            <a href="{% url 'home' %}" class="text-blue-500 hover:underline">Home</a>
         </div>
     </div>
 

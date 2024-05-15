@@ -3,84 +3,45 @@
 <head>
     <title>Chat Room - {{ room }}</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .chat-container {
-            display: flex;
-            width: 100%;
-            max-width: 1200px; /* Adjust based on your preference */
-        }
-
-        .sidebar {
-            flex: 1;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-right: 20px; /* Space between sidebar and chat display */
-        }
-
-        .chat-display {
-            flex: 3;
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-input, .form-button {
-            /* Styles for form inputs and buttons */
-            padding: 10px;
-            margin: 5px 0; /* Spacing between form elements */
-        }
-
-        .form-button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        </style>
-<body>
-    <a href="{% url 'home' %}">Back to Rooms</a>
-    <div class="chat-container">
-        <div class="sidebar">
-            <h2>Users</h2>
-            {% for user in usernames %}
-                <div>{{ user }}</div>
-            {% endfor %}
-            <h3>Add User</h3>
-            <form action="" method="POST">
-                {% csrf_token %}
-                <input type="text" id="username" name="username" class="form-input" placeholder="Enter username" required>
-                <button type="submit" class="form-button">Submit</button>
-            </form>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <a href="{% url 'home' %}" class="block text-blue-500 mt-4 ml-4">Back to Rooms</a>
+    <div class="flex justify-center items-center h-screen">
+        <div class="max-w-md w-full bg-white shadow-md rounded-lg overflow-hidden mr-4">
+            <div class="flex justify-between bg-gray-200 py-3 px-4">
+                <h2 class="text-xl">Users</h2>
+                <h3 class="text-xl">Add User</h3>
+            </div>
+            <div class="p-4 h-96 overflow-y-auto">
+                {% for user in usernames %}
+                    <div class="py-1">{{ user }}</div>
+                {% endfor %}
+                <form action="" method="POST" class="mt-4">
+                    {% csrf_token %}
+                    <input type="text" id="username" name="username" class="form-input rounded-lg py-2 px-3 border w-full" placeholder="Enter username" required>
+                    <button type="submit" class="form-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2 w-full">Submit</button>
+                </form>
+            </div>
         </div>
-        <div class="chat-display" id="display">
-            <h1>{{ room }}</h1>
+        <div class="max-w-lg w-full bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="bg-gray-200 py-3 px-4">
+                <h1 class="text-2xl">{{ room }}</h1>
+            </div>
+            <div class="p-4 h-96 overflow-y-auto" id="display">
+                <!-- Messages will be appended here -->
+            </div>
+            <form id="chat-form" class="p-4">
+                {% csrf_token %}
+                <input type="hidden" name="username" id="username" value="{{ username }}">
+                <input type="hidden" name="room_id" id="room_id" value="{{ room_details.id }}">
+                <input type="text" name="message" id="message" class="form-input rounded-lg py-2 px-3 border w-full" placeholder="Type your message here...">
+                <button type="submit" class="form-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2">Send</button>
+            </form>
         </div>
     </div>
 
-    <form id="post-form" style="margin-top: 20px;">
-        {% csrf_token %}
-        <input type="hidden" name="username" id="username" value="{{ username }}">
-        <input type="hidden" name="room_id" id="room_id" value="{{ room_details.id }}">
-        <input type="text" name="message" id="message" class="form-input" placeholder="Type your message here...">
-        <input type="submit" value="Send" class="form-button">
-    </form>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function(){
         setInterval(function(){
@@ -104,9 +65,9 @@
         })
     </script>
     <script type="text/javascript">
-        $(document).on('submit','#post-form',function(e){
+        $(document).on('submit','#chat-form',function(e){
           e.preventDefault();
-      
+    
           $.ajax({
             type:'POST',
             url:'/send',
@@ -117,10 +78,15 @@
               csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
             },
             success: function(data){
+              // Add any success handling here if needed
+            },
+            error: function(xhr, status, error) {
+              // Add error handling here if needed
+              console.error(xhr.responseText);
             }
           });
-          document.getElementById('message').value = ''
+          document.getElementById('message').value = '';
         });
-      </script>
+    </script>    
 </body>
 </html>
