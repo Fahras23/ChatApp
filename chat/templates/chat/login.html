@@ -3,24 +3,36 @@
 <head>
     <title>Login</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
+<body class="bg-gray-100">
 
-    <div class="navbar">
-        <a href="{% url 'home' %}">Home</a>
+    <div class="navbar bg-gray-800 text-white p-6">
+        <a href="{% url 'home' %}" class="text-lg font-bold">ChatApp</a>
     </div>
 
-    <div class="content">
-        <form method="post" class="login-form">
+    <div class="content max-w-lg mx-auto p-8">
+        <form method="post" class="login-form bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden p-8">
             {% csrf_token %}
-            <div class="form-group">
-                {{ form.as_p }}
+            <div class="form-group mb-6">
+                {{ form.username.errors }}
+                <label for="id_username" class="block text-lg font-semibold text-gray-700 mb-2">Username:</label>
+                <input type="text" name="username" id="id_username" class="form-input border border-gray-300 focus:border-blue-500 w-full px-3 py-2 rounded-lg" placeholder="Enter your username">
             </div>
-            <button type="submit" class="form-button">Login</button>
-            <div class="register-link">
-                New user? Register <a href="{% url 'register-user' %}">here</a>.
+            <div class="form-group mb-6">
+                {{ form.password.errors }}
+                <label for="id_password" class="block text-lg font-semibold text-gray-700 mb-2">Password:</label>
+                <input type="password" name="password" id="id_password" class="form-input border border-gray-300 focus:border-blue-500 w-full px-3 py-2 rounded-lg" placeholder="Enter your password">
+            </div>
+            <div class="form-group mb-6">
+                {{ form.code.errors }}
+                <label for="id_code" class="block text-lg font-semibold text-gray-700 mb-2">Code:</label>
+                <input type="text" name="code" id="id_code" class="form-input border border-gray-300 focus:border-blue-500 w-full px-3 py-2 rounded-lg" placeholder="Enter your code">
+            </div>
+            <button type="submit" class="form-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg mt-6">Login</button>
+            <div class="register-link mt-6 text-center">
+                New user? Register <a href="{% url 'register-user' %}" class="text-blue-500 hover:underline">here</a>.
             </div>
         </form>
     </div>
