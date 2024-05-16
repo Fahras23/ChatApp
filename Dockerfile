@@ -1,6 +1,12 @@
 FROM python:3.11
-COPY ./ ./
-WORKDIR /
+
+WORKDIR /app/backend
+
+COPY requirements.txt /app/backend
 RUN pip install -r requirements.txt
-ENTRYPOINT ["python"]
-RUN python manage.py runserver
+
+COPY . /app/backend
+
+EXPOSE 7000
+
+CMD python /app/backend/manage.py runserver 0.0.0.0:7000
