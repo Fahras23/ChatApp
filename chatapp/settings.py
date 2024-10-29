@@ -26,7 +26,7 @@ SECRET_KEY = "***REMOVED***"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 CHANNEL_LAYERS = {
     "default": {
@@ -86,9 +86,13 @@ TEMPLATES = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "chatapp_db",
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"), 
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 
@@ -115,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-us" 
 
 TIME_ZONE = "UTC"
 
@@ -128,13 +132,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+if os.getenv("STATIC_ROOT"):
+    STATIC_ROOT = os.getenv("STATIC_ROOT")
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-STATIC_ROOT = "/var/www/example.com/static/"
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+
