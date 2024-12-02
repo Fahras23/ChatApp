@@ -40,13 +40,13 @@ def room_view(request, id):
         })
     else:
         print("user not authenticated")
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect('/')
 
 #functionality
 def send(request):
     message = request.POST['message']
     room_id = request.POST['room_id']
-    username = request.user
+    username = str(request.user)
     if message:
         new_message = Message.objects.create(content=message, user=username, room_id=room_id)
         new_message.save()
