@@ -3,56 +3,23 @@
 <head>
     <title>Register</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .form-input, button[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-input-group">
-            {{ user_form.as_p }}
-        </div>
-        <button type="submit">Register</button>
-    </form>
+<body class="bg-gray-100">
+
+    <div class="navbar bg-gray-800 text-white p-6">
+        <a href="{% url 'home' %}" class="text-lg font-bold">Home</a>
+    </div>
+
+    <div class="min-h-screen flex justify-center items-center">
+        <form method="post" class="bg-white p-8 rounded-lg shadow-md max-w-md">
+            {% csrf_token %}
+            <div class="form-group mb-6 text-lg border-2">
+                {{ user_form.as_p }}
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">Register</button>
+        </form>
+    </div>
+
 </body>
 </html>
