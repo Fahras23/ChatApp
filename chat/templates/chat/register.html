@@ -14,7 +14,7 @@
     <div class="min-h-screen flex justify-center items-center">
         <form method="post" class="bg-white p-8 rounded-lg shadow-md max-w-md">
             {% csrf_token %}
-            <div class="form-group mb-6 text-lg">
+            <div class="form-group mb-6 text-lg border-2">
                 {{ user_form.as_p }}
             </div>
             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">Register</button>
