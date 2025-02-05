@@ -24,6 +24,8 @@ def home(request):
 @login_required
 def room_view(request, id):
     room_details = Room.objects.get(id=id)
+    messages = Message.objects.filter(room=room_details.id)
+
     if request.method=="POST":
        add_user = request.POST.get('username')
        if add_user in list(User.objects.values_list('username', flat = True)):
@@ -36,11 +38,11 @@ def room_view(request, id):
         return render(request, 'chat/room.html', {
             'usernames': usernames,
             'room': room_details.name,
-            'room_details': room_details
+            'room_details': room_details,
+            'messages': messages
         })
     else:
         print("user not authenticated")
-        return redirect('/')
 
 #functionality
 def send(request):
@@ -50,9 +52,9 @@ def send(request):
     if message:
         new_message = Message.objects.create(content=message, user=username, room_id=room_id)
         new_message.save()
-        return HttpResponse('Message sent successfully')
+        print('Message sent successfully')
     else:
-        return HttpResponse('Message inncorrect')
+        print('Message inncorrect')
     
 def getMessages(request,room_name):
     room = Room.objects.get(name=room_name)
