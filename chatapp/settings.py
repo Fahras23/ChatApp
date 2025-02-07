@@ -26,11 +26,9 @@ SECRET_KEY = "django-insecure-@gv--puoex2!-q3yk#k^q)3zr%hp-tmeu=hde9#o&=nqne+e04
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-
-CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
-
+# settings.py (Django Channels and Redis setup)
 INSTALLED_APPS = [
+    "daphne",
     "channels",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -41,12 +39,22 @@ INSTALLED_APPS = [
     "chat",
 ]
 
+ALLOWED_HOSTS = ["*"]
+
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login-user"
 
 
 ASGI_APPLICATION = "chatapp.asgi.application"
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
