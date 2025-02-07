@@ -4,7 +4,7 @@ autobahn==23.6.2
 Automat==22.10.0
 black==25.1.0
 cffi==1.16.0
-channels==3.0.5
+channels==4.2.0
 channels_redis==4.2.1
 click==8.1.8
 constantly==23.10.4
