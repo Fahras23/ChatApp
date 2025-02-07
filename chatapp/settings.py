@@ -136,12 +136,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
-if os.getenv("STATIC_ROOT"):
-    STATIC_ROOT = os.getenv("STATIC_ROOT")
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# if os.getenv("STATIC_ROOT"):
+#     STATIC_ROOT = os.getenv("STATIC_ROOT")
+# else:
+    
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

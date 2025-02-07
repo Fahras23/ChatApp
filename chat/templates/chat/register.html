@@ -5,21 +5,32 @@
     {% load static %}
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 flex flex-col min-h-screen">
 
+    <!-- Navbar -->
     <div class="navbar bg-gray-800 text-white p-6">
-        <a href="{% url 'home' %}" class="text-lg font-bold">Home</a>
+        <a href="{% url 'home' %}" class="text-lg font-bold">ChatApp</a>
     </div>
 
-    <div class="min-h-screen flex justify-center items-center">
-        <form method="post" class="bg-white p-8 rounded-lg shadow-md max-w-md">
-            {% csrf_token %}
-            <div class="form-group mb-6 text-lg border-2">
-                {{ user_form.as_p }}
-            </div>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">Register</button>
-        </form>
+    <!-- Form Section -->
+    <div class="flex justify-center items-center flex-grow">
+        <div class="bg-white shadow-xl rounded-xl p-10 w-full max-w-xl mt-16">
+            <h2 class="text-3xl font-semibold text-gray-800 text-center mb-8">Create an Account</h2>
+            
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="space-y-4 text-lg">
+                    {{ user_form.as_p }}
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg text-lg transition duration-300">
+                    Sign Up
+                </button>
+            </form>
+        </div>
     </div>
 
 </body>
+
 </html>

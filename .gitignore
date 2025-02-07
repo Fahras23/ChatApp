@@ -1,4 +1,5 @@
-chat/__pycache__/
+**/__pycache__/
 /venv/
 .env
 db.sqlite3
+mydatabase
