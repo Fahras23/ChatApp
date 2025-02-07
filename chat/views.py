@@ -2,12 +2,17 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from .models import Room, Message, Profile
-from .forms import UserForm, LoginForm, OTPForm
-import pyotp
-import qrcode
 from django.contrib.auth.decorators import login_required
 
+from io import BytesIO
+import pyotp
+import qrcode
+import io
+import base64
+from PIL import Image
+
+from .models import Room, Message, Profile
+from .forms import UserForm, LoginForm, OTPForm
 
 def home(request):
     if request.user.is_authenticated is False:
@@ -161,6 +166,9 @@ def qr_code(request):
     otp_url = pyotp.totp.TOTP(user_profile.code).provisioning_uri(
         request.user.email, issuer_name=request.user.username
     )
-    qrcode.make(otp_url).save("static/qr.png")
+    qr = qrcode.make(otp_url)
+    buffer = io.BytesIO()
+    qr.save(buffer, format="PNG")
+    qr_base64 = base64.b64encode(buffer.getvalue()).decode()
 
-    return render(request, "chat/auth.html")
+    return render(request, "chat/auth.html", {"qr_base64": qr_base64})
