@@ -15,6 +15,7 @@ from PIL import Image
 from .models import Room, Message, Profile
 from .forms import UserForm, LoginForm, OTPForm
 
+
 def home(request):
     if request.user.is_authenticated is False:
         return redirect("login-user")
@@ -54,6 +55,7 @@ def room_view(request, id):
         )
     else:
         print("user not authenticated")
+
 
 def create_room(request):
     # get room_name from view
@@ -129,16 +131,20 @@ def login_user(request):
                     user_profile = User.objects.get(username=username)
                     code = form.cleaned_data.get("code")
                     if pyotp.TOTP(user_profile.profile.code).verify(code):
-                        login(request, user_profile, backend='django.contrib.auth.backends.ModelBackend')
-                        return redirect("home") 
+                        login(
+                            request,
+                            user_profile,
+                            backend="django.contrib.auth.backends.ModelBackend",
+                        )
+                        return redirect("home")
                     else:
                         print("wrong otp code")
-                        messages.add_message(request, messages.ERROR,"Wrong otp code")
-                        redirect("login-user") 
+                        messages.add_message(request, messages.ERROR, "Wrong otp code")
+                        redirect("login-user")
             print("wrong input")
-            messages.add_message(request, messages.ERROR,"Wrong input")
-            redirect("login-user") 
-    else:   
+            messages.add_message(request, messages.ERROR, "Wrong input")
+            redirect("login-user")
+    else:
         form = LoginForm()
     return render(request, "chat/login.html", {"form": form})
 

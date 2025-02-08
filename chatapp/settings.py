@@ -30,7 +30,7 @@ DEBUG = True
 INSTALLED_APPS = [
     "daphne",
     "channels",
-    'axes',
+    "axes",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -49,9 +49,9 @@ LOGOUT_REDIRECT_URL = "login-user"
 ASGI_APPLICATION = "chatapp.asgi.application"
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
             "hosts": [((os.getenv("REDIS_HOST")), int(os.getenv("REDIS_PORT")))],
         },
     },
@@ -65,7 +65,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'axes.middleware.AxesMiddleware',
+    "axes.middleware.AxesMiddleware",
 ]
 
 ROOT_URLCONF = "chatapp.urls"
@@ -130,13 +130,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'axes.backends.AxesStandaloneBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 AXES_FAILURE_LIMIT = 5
 AXES_RESET_ON_SUCCESS = True
-AXES_COOLOFF_TIME = 1/600
+AXES_COOLOFF_TIME = 1 / 600
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -158,7 +158,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # if os.getenv("STATIC_ROOT"):
 #     STATIC_ROOT = os.getenv("STATIC_ROOT")
 # else:
-    
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
