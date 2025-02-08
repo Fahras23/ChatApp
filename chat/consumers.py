@@ -36,55 +36,55 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    'type': 'chat_message',
+                    "type": "chat_message",
                     "message": message,
                     "username": username,
                     "room_id": room_id,
                 },
             )
         else:
-            user = data['user']
-            room_id = data['room_id']
-            
-  
+            user = data["user"]
+            room_id = data["room_id"]
 
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    'type': 'chat_user',
+                    "type": "chat_user",
                     "user": user,
                     "room_id": room_id,
                 },
             )
-            
-
 
     async def chat_message(self, event):
-        message = event['message']
-        username = event['username']
-        room_id = event['room_id']
-        msg_type = event['type']
-        await self.send(text_data=json.dumps({
-            'message': message,
-            'username': username,
-            'room_id': room_id,
-            'type': msg_type
-        }))
+        message = event["message"]
+        username = event["username"]
+        room_id = event["room_id"]
+        msg_type = event["type"]
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "message": message,
+                    "username": username,
+                    "room_id": room_id,
+                    "type": msg_type,
+                }
+            )
+        )
 
     async def chat_user(self, event):
-        user = str(event['user'])
-        room_id = event['room_id']
-        msg_type = event['type']
+        user = str(event["user"])
+        room_id = event["room_id"]
+        msg_type = event["type"]
 
         # check if user exist in db or on room list
-        check = await self.check_and_save_user(user,room_id)
+        check = await self.check_and_save_user(user, room_id)
 
         if check == True:
-            await self.send(text_data=json.dumps({
-                'user': str(user),
-                'room_id': room_id,
-                'type': msg_type
-            }))
+            await self.send(
+                text_data=json.dumps(
+                    {"user": str(user), "room_id": room_id, "type": msg_type}
+                )
+            )
 
     # Decorator for awaiting of processing rest of function till its finished
     @sync_to_async
@@ -96,8 +96,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def check_and_save_user(self, user, room_id):
-        user_obj = User.objects.filter(username=user).first()        
-        if not user_obj or Room.objects.filter(id=room_id, users__username=user).exists():
+        user_obj = User.objects.filter(username=user).first()
+        if (
+            not user_obj
+            or Room.objects.filter(id=room_id, users__username=user).exists()
+        ):
             print(f"User '{user}' does not exist. or exist already in chat")
             return False
         room = Room.objects.get(id=room_id)
