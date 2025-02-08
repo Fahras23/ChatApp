@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth.backends import ModelBackend
 
 from io import BytesIO
 import pyotp
@@ -53,28 +54,6 @@ def room_view(request, id):
         )
     else:
         print("user not authenticated")
-
-
-# functionality
-def send(request):
-    message = request.POST["message"]
-    room_id = request.POST["room_id"]
-    username = str(request.user)
-    if message:
-        new_message = Message.objects.create(
-            content=message, user=username, room_id=room_id
-        )
-        new_message.save()
-        print("Message sent successfully")
-    else:
-        print("Message inncorrect")
-
-
-def getMessages(request, room_name):
-    room = Room.objects.get(name=room_name)
-    messages = Message.objects.filter(room=room)
-    return JsonResponse({"messages": list(messages.values())})
-
 
 def create_room(request):
     # get room_name from view
@@ -142,20 +121,24 @@ def login_user(request):
         if form.is_valid():
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
-
-            if username is not None and form.is_valid():
+            user = authenticate(request, username=username, password=password)
+            if user is not None and form.is_valid():
                 # User is authenticated with username and password
                 otp_form = OTPForm(request.POST)
                 if otp_form:
                     user_profile = User.objects.get(username=username)
                     code = form.cleaned_data.get("code")
                     if pyotp.TOTP(user_profile.profile.code).verify(code):
-                        login(request, user_profile)
-                        return redirect("home")
+                        login(request, user_profile, backend='django.contrib.auth.backends.ModelBackend')
+                        return redirect("home") 
                     else:
-                        # OTP verification failed
-                        pass
-    else:
+                        print("wrong otp code")
+                        messages.add_message(request, messages.ERROR,"Wrong otp code")
+                        redirect("login-user") 
+            print("wrong input")
+            messages.add_message(request, messages.ERROR,"Wrong input")
+            redirect("login-user") 
+    else:   
         form = LoginForm()
     return render(request, "chat/login.html", {"form": form})
 

@@ -30,6 +30,7 @@ DEBUG = True
 INSTALLED_APPS = [
     "daphne",
     "channels",
+    'axes',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -51,7 +52,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [("redis", 6379)],
+            "hosts": [((os.getenv("REDIS_HOST")), int(os.getenv("REDIS_PORT")))],
         },
     },
 }
@@ -64,6 +65,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = "chatapp.urls"
@@ -127,6 +129,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+AXES_FAILURE_LIMIT = 5
+AXES_RESET_ON_SUCCESS = True
+AXES_COOLOFF_TIME = 1/600
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -157,3 +167,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
