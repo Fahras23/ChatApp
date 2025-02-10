@@ -9,7 +9,7 @@ services:
       - "6379:6379"
 
   web:
-    build: .
+    image: kyczak/chatapp:latest
     container_name: chatapp
     restart: always
     depends_on:
