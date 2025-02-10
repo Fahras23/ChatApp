@@ -4,10 +4,12 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip install -r requirements.txt
+ENV DJANGO_SETTINGS_MODULE=chatapp.settings
+ENV REDIS_PORT=6379
+ENV REDIS_HOST=redis
 
-COPY . /app/backend
+RUN pip install -r requirements.txt
 
 EXPOSE 8000
 
-CMD ["gunicorn", "chatapp.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "chatapp.asgi:application"]

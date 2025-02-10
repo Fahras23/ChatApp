@@ -7,11 +7,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="bg-gray-100">
-
     <div class="navbar bg-gray-800 text-white p-6">
         <a href="{% url 'home' %}" class="text-lg font-bold">ChatApp</a>
     </div>
-
+    {% if messages %}
+    <div class="max-w-lg mx-auto mt-6">
+        {% for message in messages %}
+            <div class="p-4 mb-4 rounded-lg text-white bg-red-500">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div class="content max-w-lg mx-auto p-8">
         <form method="post" class="login-form bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden p-8">
             {% csrf_token %}
