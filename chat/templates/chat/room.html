@@ -7,86 +7,117 @@
 </head>
 <body class="bg-gray-100">
     <a href="{% url 'home' %}" class="block text-blue-500 mt-4 ml-4">Back to Rooms</a>
-    <div class="flex justify-center items-center h-screen">
-        <div class="max-w-md w-full bg-white shadow-md rounded-lg overflow-hidden mr-4">
-            <div class="flex justify-between bg-gray-200 py-3 px-4">
-                <h2 class="text-xl">Users</h2>
-                <h3 class="text-xl">Add User</h3>
-            </div>
-            <div class="p-4 h-96 overflow-y-auto">
-                {% for user in usernames %}
-                    <div class="py-1">{{ user }}</div>
-                {% endfor %}
-                <form action="" method="POST" class="mt-4">
-                    {% csrf_token %}
-                    <input type="text" id="username" name="username" class="form-input rounded-lg py-2 px-3 border w-full" placeholder="Enter username" required>
-                    <button type="submit" class="form-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2 w-full">Submit</button>
-                </form>
-            </div>
-        </div>
+
+    <div class="flex justify-center items-center h-screen space-x-4">
+        <!-- Chat Panel -->
         <div class="max-w-lg w-full bg-white shadow-lg rounded-lg overflow-hidden">
             <div class="bg-gray-200 py-3 px-4">
-                <h1 class="text-2xl">{{ room }}</h1>
+                <h1 class="text-2xl font-semibold">{{ room }}</h1>
             </div>
-            <div class="p-4 h-96 overflow-y-auto" id="display">
-                <!-- Messages will be appended here -->
+            <div class="p-4 h-96 overflow-y-auto" id="chat-messages">
+                {% for m in messages %}
+                    <p><strong>{{ m.user }}</strong>: {{ m.content }}</p>
+                {% endfor %}
             </div>
             <form id="chat-form" class="p-4">
                 {% csrf_token %}
                 <input type="hidden" name="username" id="username" value="{{ username }}">
                 <input type="hidden" name="room_id" id="room_id" value="{{ room_details.id }}">
-                <input type="text" name="message" id="message" class="form-input rounded-lg py-2 px-3 border w-full" placeholder="Type your message here...">
-                <button type="submit" class="form-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2">Send</button>
+                <input type="text" name="message" id="chat-message-input" class="form-input rounded-lg py-2 px-3 border w-full" placeholder="Type your message here..." required>
+                <button type="submit" id="chat-message-submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2 w-full">
+                    Send
+                </button>
             </form>
         </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function(){
-        setInterval(function(){
-            $.ajax({
-                type: 'GET',
-                url : "/getMessages/{{room}}/",
-                success: function(response){
-                    console.log(response);
-                    $("#display").empty();
-                    for (var key in response.messages)
-                    {
-                        var temp="<div class='container darker'><b>"+response.messages[key].user+": "+response.messages[key].content+"</p><span class='time-left'>"+"</div>";
-                        $("#display").append(temp);
-                    }
-                },
-                error: function(response){
-                    alert('An error occured')
-                }
-            });
-        },500);
-        })
-    </script>
-    <script type="text/javascript">
-        $(document).on('submit','#chat-form',function(e){
-          e.preventDefault();
     
-          $.ajax({
-            type:'POST',
-            url:'/send',
-            data:{
-                username:$('#username').val(),
-                room_id:$('#room_id').val(),
-                message:$('#message').val(),
-              csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-            },
-            success: function(data){
-              // Add any success handling here if needed
-            },
-            error: function(xhr, status, error) {
-              // Add error handling here if needed
-              console.error(xhr.responseText);
+        <!-- User List Panel (Now on the Right) -->
+        <div class="max-w-md w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="flex justify-between bg-gray-200 py-3 px-4">
+                <h2 class="text-xl font-semibold">Users</h2>
+                <h3 class="text-xl font-semibold">Add User</h3>
+            </div>
+            <div class="p-4 h-96 overflow-y-auto">
+                <div id="user-list">
+                    {% for user in usernames %}
+                        <div class="py-1">{{ user }}</div>
+                    {% endfor %}
+                </div>
+                <form action="" class="mt-4">
+                    {% csrf_token %}
+                    <input type="text" id="chat-user-input" class="form-input rounded-lg py-2 px-3 border w-full" placeholder="Enter username" required>
+                    <button type="submit" id="chat-user-submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2 w-full">
+                        Submit
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{ room_details.id|json_script:"json-roomid" }}
+    {{ request.user.username|json_script:"json-username" }}
+    {{ usernames.all.username|json_script:"json-usernames" }}
+    <script>
+        const roomId = JSON.parse(document.getElementById('json-roomid').textContent);
+        const userName = JSON.parse(document.getElementById('json-username').textContent);
+
+        const chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/room/' + roomId + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            console.log('onmessage')
+  
+            const data = JSON.parse(e.data);
+            console.log(data)
+            if (data.type == 'chat_message') {
+                let html = '<p>' + data.username + ": " + data.message + '</p>';
+
+                document.querySelector('#chat-messages').innerHTML += ('<b>' + data.username + '</b>: ' + data.message + '<br>');
             }
-          });
-          document.getElementById('message').value = '';
-        });
-    </script>    
+            else if (data.user !== "") {
+            let html = '<p>' + data.user +  '</p>';
+
+                document.querySelector('#user-list').innerHTML += ('<b>' + data.user + '<br>');
+            }        
+        }
+
+        chatSocket.onclose = function(e) {
+            console.log('onclose')
+        }
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            e.preventDefault();
+
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'username': userName,
+                'room_id': roomId,
+                'type': 'chat_message'
+            }));
+
+            messageInputDom.value = '';
+
+            return false;
+        }
+        
+        document.querySelector('#chat-user-submit').onclick = function(e) {
+            e.preventDefault();
+
+            const userInputDom = document.querySelector('#chat-user-input');
+            const user = userInputDom.value;
+
+            chatSocket.send(JSON.stringify({
+                'user': user,
+                'room_id': roomId,
+                'type': 'chat_user'
+            }));
+
+            userInputDom.value = '';
+
+            return false;
+        }
+    </script>
 </body>
 </html>

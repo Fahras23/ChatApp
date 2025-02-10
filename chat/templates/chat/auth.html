@@ -13,7 +13,7 @@
 
     <div class="content max-w-lg mx-auto p-8">
         <div class="image-container mb-8">
-            <img src="{% static 'qr.png' %}" alt="My image" class="qr-image">
+            <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR Code" class="w-100 h-100 mx-auto mt-6">
         </div>
         <div class="home-link text-center">
             <a href="{% url 'home' %}" class="text-blue-500 hover:underline">Home</a>
