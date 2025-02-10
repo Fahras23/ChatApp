@@ -138,6 +138,7 @@ def login_user(request):
                         login(
                             request,
                             user_profile,
+                            backend="django.contrib.auth.backends.ModelBackend",
                         )
                         return redirect("home")
                     else:
