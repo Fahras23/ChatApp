@@ -9,6 +9,8 @@ ENV REDIS_PORT=6379
 ENV REDIS_HOST=redis
 
 RUN pip install -r requirements.txt
+RUN python manage.py makemigrations
+RUN python manage.py migrate
 
 EXPOSE 8000
 

@@ -108,8 +108,12 @@ def register_user(request):
             profile.generate_otp_secret()
             profile.save()
 
-            authenticate(username=user.username, password=user.password)
-            login(request, user)
+            authenticate(
+                request,
+                username=user.username, 
+                password=user.password,
+                )
+            login(request, user, backend="django.contrib.auth.backends.ModelBackend",)
             return redirect("auth")
     else:
         user_form = UserForm()
@@ -134,7 +138,6 @@ def login_user(request):
                         login(
                             request,
                             user_profile,
-                            backend="django.contrib.auth.backends.ModelBackend",
                         )
                         return redirect("home")
                     else:
