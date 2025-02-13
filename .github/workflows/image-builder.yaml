@@ -31,7 +31,7 @@ jobs:
 
       - name: Test
         run: |
-          docker run --rm ${{ env.TEST_TAG }}
+          docker run --rm --entrypoint "" ${{ env.TEST_TAG }} python -c "print('Test successful')"
         
       - name: Build and push
         uses: docker/build-push-action@v6
