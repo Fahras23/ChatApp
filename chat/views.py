@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth.backends import ModelBackend
 
 from io import BytesIO
 import pyotp
@@ -14,7 +13,6 @@ from PIL import Image
 
 from .models import Room, Message, Profile
 from .forms import UserForm, LoginForm, OTPForm
-
 
 def home(request):
     if request.user.is_authenticated is False:

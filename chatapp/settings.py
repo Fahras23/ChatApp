@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "daphne",
     "channels",
     "axes",
+    'celery',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -169,3 +170,5 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
+
+BROKER_URL = os.environ.get('RABBITMQ_URL', 'amqp://guest:guest@localhost:5672/')
