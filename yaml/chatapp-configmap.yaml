@@ -4,4 +4,3 @@ metadata:
   name: chatapp-config
 data:
   DJANGO_ALLOWED_HOSTS: "*"
-  REDIS_PORT: 6379
