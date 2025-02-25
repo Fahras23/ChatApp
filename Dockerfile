@@ -7,7 +7,7 @@ COPY . /app
 ENV DJANGO_SETTINGS_MODULE=chatapp.settings
 ENV REDIS_PORT=6379
 ENV REDIS_HOST=redis
-ENV DEBUG=False
+ENV DEBUG=True
 
 RUN pip install -r requirements.txt
 RUN python manage.py makemigrations
