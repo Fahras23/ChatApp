@@ -24,7 +24,7 @@ AUTH_PROFILE_MODULE = "YOURAPP.UserProfile"
 SECRET_KEY = "***REMOVED***"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("REDIS_HOST")
+DEBUG = os.getenv("DEBUG")
 
 # settings.py (Django Channels and Redis setup)
 INSTALLED_APPS = [
