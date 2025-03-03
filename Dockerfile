@@ -6,7 +6,7 @@ COPY . /app
 
 ENV DJANGO_SETTINGS_MODULE=chatapp.settings
 ENV REDIS_PORT=6379
-ENV REDIS_HOST=redis
+ENV REDIS_HOST=beta-redis
 ENV DEBUG=False
 
 RUN pip install -r requirements.txt
