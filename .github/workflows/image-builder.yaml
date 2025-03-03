@@ -43,7 +43,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
         uses: docker/build-push-action@v6
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: ${{ env.LATEST_TAG }}
 
@@ -51,6 +51,6 @@ jobs:
         if: github.ref == 'refs/heads/beta'
         uses: docker/build-push-action@v6
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: ${{ env.BETA_TAG}}
