@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponse
+from prometheus_client import generate_latest
 
 from io import BytesIO
 import pyotp
@@ -163,3 +165,7 @@ def qr_code(request):
     qr_base64 = base64.b64encode(buffer.getvalue()).decode()
 
     return render(request, "chat/auth.html", {"qr_base64": qr_base64})
+
+def metrics_view(request):
+    metrics = generate_latest()
+    return HttpResponse(metrics, content_type='text/plain; version=0.0.4')

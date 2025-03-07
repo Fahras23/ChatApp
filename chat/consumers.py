@@ -5,7 +5,7 @@ from asgiref.sync import sync_to_async
 
 from django.contrib.auth.models import User
 from .models import Room, Message
-
+from .metrics import messages_sent
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -89,6 +89,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Decorator for awaiting of processing rest of function till its finished
     @sync_to_async
     def save_message(self, username, room_id, message):
+        messages_sent.inc()
+        
         user = User.objects.get(username=username)
         room = Room.objects.get(id=room_id)
 
