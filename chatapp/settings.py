@@ -21,10 +21,10 @@ AUTH_PROFILE_MODULE = "YOURAPP.UserProfile"
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "***REMOVED***"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = False
 
 # settings.py (Django Channels and Redis setup)
 INSTALLED_APPS = [
