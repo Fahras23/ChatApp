@@ -44,8 +44,6 @@ python manage.py createsuperuser
 5. Run Daphne Server or Docker compose
 daphne -b 0.0.0.0 -p 8000 chatapp.asgi:application
 setup redis on local machine or with docker container with access port on 6379
-
-Better alternative:
-docker compose up
+- Better alternative: docker compose up
 
 6. Optional change to setup postgres database in settings
