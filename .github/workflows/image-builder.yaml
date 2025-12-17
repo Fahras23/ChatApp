@@ -1,10 +1,16 @@
 name: image-builder
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - "master"
+      - "beta"
+  workflow_dispatch:
 
 env:
   TEST_TAG: kyczak/chatapp:test
   LATEST_TAG: kyczak/chatapp:latest
+  BETA_TAG: kyczak/chatapp:beta
 
 jobs:
   docker:
@@ -33,9 +39,18 @@ jobs:
         run: |
           docker run --rm --entrypoint "" ${{ env.TEST_TAG }} python -c "print('Test successful')"
         
-      - name: Build and push
+      - name: Build and push for master
+        if: github.ref == 'refs/heads/master'
         uses: docker/build-push-action@v6
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: ${{ env.LATEST_TAG }}
+
+      - name: Build and push for beta
+        if: github.ref == 'refs/heads/beta'
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.BETA_TAG}}
