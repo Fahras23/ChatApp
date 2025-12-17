@@ -6,4 +6,4 @@
 .env
 db.sqlite3
 mydatabase
-django-secret
+django-secret.yaml
