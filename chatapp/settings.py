@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "chat",
-    "sslserver",
 ]
 
 ALLOWED_HOSTS = ["*"]
