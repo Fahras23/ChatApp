@@ -7,3 +7,5 @@
 db.sqlite3
 mydatabase
 django-secret.yaml
+exports.sh
+/static/

@@ -1,18 +1,41 @@
+FROM python:3.11-alpine AS builder
+
+WORKDIR /app
+
+# Copy only requirements first for better caching
+COPY requirements.txt .
+
+# Install build deps, pip, requirements; clean up in same layer
+RUN apk add --no-cache \
+    gcc \
+    musl-dev \
+    postgresql-dev \
+    libpq-dev && \
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apk del gcc musl-dev && \
+    rm -rf /root/.cache
+
+# Runtime image
 FROM python:3.11-alpine
 
 WORKDIR /app
 
-COPY . /app
+# Runtime PostgreSQL deps only (no build tools)
+RUN apk add --no-cache postgresql-libs && \
+    ln -s /usr/bin/pg_config /usr/local/bin/pg_config
 
-ENV DJANGO_SETTINGS_MODULE=chatapp.settings
-ENV REDIS_PORT=6379
-ENV REDIS_HOST=beta-redis
-ENV DEBUG=False
+# Copy installed packages from builder
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
-RUN apk add --no-cache postgresql postgresql-contrib libpq-dev musl-dev gcc
-RUN ln -s /usr/bin/pg_config /usr/local/bin/pg_config
+# Copy app code last (changes often, invalidates cache minimally)
+COPY . .
 
-RUN pip install -r requirements.txt
+ENV DJANGO_SETTINGS_MODULE=chatapp.settings \
+    REDIS_PORT=6379 \
+    REDIS_HOST=beta-redis \
+    DEBUG=False
 
 EXPOSE 8000
 

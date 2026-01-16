@@ -43,6 +43,10 @@ INSTALLED_APPS = [
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://klyczakchatapp.pl'
+]
+
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login-user"
 
