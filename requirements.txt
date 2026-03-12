@@ -3,7 +3,7 @@ attrs==23.1.0
 autobahn==23.6.2
 Automat==22.10.0
 billiard==4.2.1
-black==25.1.0
+black==26.3.1
 celery==5.3.0
 cffi==1.16.0
 channels==4.2.0
