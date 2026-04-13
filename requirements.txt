@@ -29,7 +29,7 @@ msgpack==1.1.0
 mypy-extensions==1.0.0
 packaging==24.0
 pathspec==0.12.1
-pillow==11.1.0
+pillow==12.2.0
 platformdirs==4.3.6
 prometheus_client==0.21.1
 prompt_toolkit==3.0.50
