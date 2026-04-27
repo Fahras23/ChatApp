@@ -40,7 +40,7 @@ jobs:
         
       # trivy scan on the just-built image
       - name: Trivy-scan
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           image-ref: ${{ env.TEST_TAG }}
           exit-code: 1
